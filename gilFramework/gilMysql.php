@@ -1,5 +1,8 @@
 <?php
 class gilMysql{
+	
+	static public $usedTime = 0;
+	
 	/**
 	 * 连接
 	 * @param array $gilConfig
@@ -19,7 +22,10 @@ class gilMysql{
 	 * @return object
 	 */
 	static public function exec($sql, $db = null){
-		return mysql_query($sql, $db);
+		$usedTimeStart = microtime();//检测SQL请求耗时，探针
+		$exec = mysql_query($sql, $db);
+		self::$usedTime = microtime() - $usedTimeStart;//检测SQL请求耗时，存入探针
+		return $exec;
 	}
 	
 	/**
