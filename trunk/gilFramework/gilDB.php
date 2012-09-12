@@ -14,7 +14,9 @@ abstract class gilDB{
 	}
 	
 	static public function find(){
-		
+		$sql = is_array(self::$_selectSpace) ? self::_selectSpaceParser() : self::$_selectSpace;
+		$result = call_user_func('gil'.self::$_gilConfig['db'].'::getArray',$sql,self::_connect());
+		return array_pop($result);
 	}
 	
 	static public function findAll(){
@@ -44,8 +46,7 @@ abstract class gilDB{
 				$fields[] = $selectSpaceItem['table'] . '.' . $fat;
 			}
 		}
-		$sql = 'SELECT '. implode(',',$fields) . $fromSql . $joinSql . $endSql;
-		return $sql;
+		return 'SELECT '. implode(',',$fields) . $fromSql . $joinSql . $endSql;
 	}
 	
 	static protected function _conditionParser($table, $condition, $join = false){
