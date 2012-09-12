@@ -1,8 +1,18 @@
 <?php
-abstract class gilDB{
+class gilDB{
 	static public $_connected = null;
-	static public $_gilConfig = array();
+	static public $_cursor = null;
 	static private $_selectSpace = array();
+	
+	private function __construct(){
+		global $gilConfig;
+		self::$_connected = call_user_func('gil'.$gilConfig['db'].'::_conn');
+	}
+	
+	static public function close(){
+		self::_connect() -> _disconn();
+		self::$_connected = null;
+	}
 	
 	static public function select($table, $conditions = array(), $sort = '', $limit = '', $fields = '*'){
 		self::$_selectSpace = array();
@@ -15,18 +25,24 @@ abstract class gilDB{
 	
 	static public function find(){
 		$sql = is_array(self::$_selectSpace) ? self::_selectSpaceParser() : self::$_selectSpace;
-		$result = call_user_func('gil'.self::$_gilConfig['db'].'::getArray',$sql,self::_connect());
+		$result = self::_connect() -> getArray($sql);
 		return array_pop($result);
 	}
 	
 	static public function findAll(){
 		$sql = is_array(self::$_selectSpace) ? self::_selectSpaceParser() : self::$_selectSpace;
-		return call_user_func('gil'.self::$_gilConfig['db'].'::getArray',$sql,self::_connect());
+		return self::_connect() -> getArray($sql);
+	}
+	
+	static public function findSql($sql){
+		self::$_selectSpace = $sql;
+		return self::findAll();
 	}
 	
 	static protected function _connect(){
 		if(self::$_connected === null){
-			self::$_connected = call_user_func('gil'.self::$_gilConfig['db'].'::_conn',self::$_gilConfig);
+			$c = __CLASS__ ;  
+            self::$_cursor = new $c();  
 		}
 		return self::$_connected;
 	}
