@@ -1,5 +1,7 @@
 <?php
 define('GILPATH',dirname(__FILE__).'/gilFramework');
+
+$gilConfig = array('oo'=>false);
 include(GILPATH.'/gilCore.php');
 
 //$result = gilDB::findAll('select * from test');
