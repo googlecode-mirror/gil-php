@@ -1,5 +1,5 @@
 <?php
-class gilMysql{
+class GilMysql{
 	
 	static public $_db = null;
 	

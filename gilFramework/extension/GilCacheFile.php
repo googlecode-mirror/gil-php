@@ -1,34 +1,5 @@
 <?php
-class gilCache{
-	static public $_cache = null;
-	static public $_gilConfig = array();
-	
-	static function set($key,$value,$lifeTime = '-1'){self::cache() -> set($key,$value,$lifeTime);}
-	static function del($key){self::cache()->del($key);}
-	static function get($key){return self::cache()->get($key);}
-	
-	/**
-	 * 引擎切换
-	 * @param string $engine 引擎标识
-	 */
-	static public function engineSwitch($engine){
-		return self::$_cache = call_user_func('gilCache'.$engine.'::_init',self::$_gilConfig);
-	}
-	
-	/**
-	 * 默认引擎的初始化
-	 * Enter description here ...
-	 */
-	static protected function cache(){
-		if(self::$_cache === null){
-			self::$_cache = call_user_func('gilCache'.self::$_gilConfig['cache_config']['cacheEngine'].'::_init',self::$_gilConfig);
-		}
-		return self::$_cache;
-	}
-	
-}
-
-class gilCacheFile{
+class GilCacheFile{
 	static public $_cursor = null;
 	static protected $_dir = '';
 	
