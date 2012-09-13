@@ -2,7 +2,7 @@
 return 
 $gilConfigs = array(
 
-	'oo' => false,//面向对象编程，如果此值为false，默认不加载GilController类
+	'oo' => true,//面向对象编程，如果此值为false，默认不加载GilController类
 
 	'oo_config' => array(
 		'defaultController' => 'main',//默认的控制器

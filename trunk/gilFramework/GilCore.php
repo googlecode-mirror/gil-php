@@ -1,8 +1,10 @@
 <?php
 
-defined('GILPATH') or define('GILPATH',dirname(__FILE__).'/gilFramework');
+defined('GILPATH') or define('GILPATH',dirname(__FILE__).'/');
 
 require(GILPATH.'/GilFunctions.php');
-$gilConfig = require(GILPATH.'/GilConfig.php');
 
-if($gilConfig['oo']) require(GILPATH.'/GilController.php');//加载OO模式控制器
+if(isset($gilConfig)) $gilConfig = array_merge(require(GILPATH.'/GilConfig.php'), $gilConfig);
+else $gilConfig = require(GILPATH.'/GilConfig.php');
+
+if($gilConfig['oo']) GilController::__init();
