@@ -71,6 +71,7 @@ class GilDB{
 	 * @param string $fields
 	 */
 	static public function link($linkto, $table, $conditions, $fields = '*'){
+		self::$_selectSpace[] = array('type'=>'link','linkto'=>$linkto,'table'=>$table,'conditions'=>$conditions,'fields'=>$fields);
 		self::$_selectSpaceLink[] = array('linkto'=>$linkto,'table'=>$table,'conditions'=>$conditions,'fields'=>$fields);
 	}
 	
@@ -104,6 +105,20 @@ class GilDB{
 	 */
 	static public function findSql($sql){
 		return self::_connect() -> getArray($sql);
+	}
+	
+	/**
+	 * 根据表名清除读取该表的所有缓存
+	 * 适合某一表有新数据插入时，需要立即显示新数据
+	 * @param string $table
+	 */
+	static public function cleanCacheByTable($table){
+		$index = GilCache::get('DBCACHE_'.$table);
+		if(empty($index)) return true; 
+		foreach($index as $k => $v){
+			GilCache::del($k);
+		}
+		GilCache::del('DBCACHE_'.$table);
 	}
 	
 	static protected function _connect(){
@@ -179,7 +194,7 @@ class GilDB{
 	}
 	
 	static protected function _getQueryCache(){
-		$hash = 'DBCACHE_'.md5(serialize(self::$_selectSpace).serialize(self::$_selectSpaceLink));
+		$hash = 'DBCACHE_'.md5(serialize(self::$_selectSpace));
 		if(self::$_gilConfig['db_processCache'] && isset(self::$_processCache[$hash])) return self::$_processCache[$hash];//优先返回进程内缓存
 		if(self::$_gilConfig['db_resultCache']) return GilCache::get($hash);//若进程内缓存不存在，则返回非持久化缓存
 		self::$_queryTimeNeedle = microtime();//定义一个时间起点，以检测缓存
@@ -187,8 +202,25 @@ class GilDB{
 	}
 	
 	static protected function _setQueryCache($result){
-		$hash = 'DBCACHE_'.md5(serialize(self::$_selectSpace).serialize(self::$_selectSpaceLink));
+		$hash = 'DBCACHE_'.md5(serialize(self::$_selectSpace));
 		if(self::$_gilConfig['db_processCache']) self::$_processCache[$hash] = $result;
-		if(self::$_gilConfig['db_resultCache'] && ((microtime() - self::$_queryTimeNeedle)) > self::$_gilConfig['db_resultCache_config']['slowRequest']) GilCache::set($hash, $result, self::$_gilConfig['db_resultCache_config']['expired']);
+		if(self::$_gilConfig['db_resultCache'] && ((microtime() - self::$_queryTimeNeedle)) > self::$_gilConfig['db_resultCache_config']['slowRequest']){
+			GilCache::set($hash, $result, self::$_gilConfig['db_resultCache_config']['expired']);
+			self::_setQueryCacheRecord($hash);
+		}
+	}
+	
+	static protected function _setQueryCacheRecord($hash){
+		foreach (self::$_selectSpace as $selectSpaceItem){
+			$table = $selectSpaceItem['table'];
+			$index = GilCache::get('DBCACHE_'.$table);
+			$index[$hash] = (self::$_gilConfig['db_resultCache_config']['expired'] + time());
+			if(mt_rand(0, 10) == 1){
+				foreach($index as $k => $v){
+					if($v < time()) unset($index[$k]);//垃圾收集机制
+				}
+			}
+			GilCache::set('DBCACHE_'.$table,$index,self::$_gilConfig['db_resultCache_config']['expired']);
+		}
 	}
 }
