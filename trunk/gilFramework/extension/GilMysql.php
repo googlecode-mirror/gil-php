@@ -75,7 +75,15 @@ class GilMysql{
 			$sql=str_ireplace(array('INSERT','UPDATE','DELETE','FILE','CREATE','ALTER','INDEX','DROP','CREATETEMPORARYTABLES','SHOWVIEW','CREATEROUTINE','ALTERROUTINE','EXECUTE','CREATEVIEW','EVENT','TRIGGER','GRANT','SUPER','PROCESS','RELOAD','SHUTDOWN','SHOWDATABASES','LOCKTABLES','REFERENCES','EPLICATIONCLIENT','REPLICATIONSLAVE','CREATEUSER'),'',$sql,$i);
 			if($i>0) exit;
 		}
-		$sql = mysql_real_escape_string($sql,self::$_db);
 		return $sql;
+	}
+	
+	/**
+	 * 转义危险字符
+	 * @param string $word
+	 * @return string
+	 */
+	static public function escape($word){
+		return mysql_real_escape_string($word,self::$_db);
 	}
 }
