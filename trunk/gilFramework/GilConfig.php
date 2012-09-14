@@ -34,14 +34,13 @@ return array(
 	 */
 	'db_resultCache_config' => array(
 		'slowRequest' => 0.000001,//将SQL执行时长大于何值时，定义为慢查询，慢查询结果将被自动缓存，单位为毫秒（0表示无条件缓存所有结果）
-		'cacheEngine' => 'File',//使用何种缓存引擎 File ,Memcache Saekvdb ......
 		'expired' => 3600,//结果缓存失效时间，单位为秒
 	),
 	
 	'cache' => true,//默认缓存开关
 	
 	'cache_config' => array(
-		'cacheEngine' => 'Memcache',//默认缓存引擎
+		'cacheEngine' => 'File',//默认缓存引擎，File ,Memcache Saekvdb ......
 		'expired' => 86400,//默认缓存失效时间
 	),
 	
