@@ -1,14 +1,31 @@
 <?php
+/**
+ * GilDB类是连接DB的基础类
+ * ，该类已包含查询缓存程序，当所有语句均存在缓存时，不会连接Mysql数据库，以提升效率
+ * @author Administrator
+ *
+ */
 class GilDB{
 	static public $_connected = null;
 	static public $_cursor = null;
+	static public $_gilConfig = array();//全局配置
 	static private $_selectSpace = array();
+	
+	/**
+		以下参数专为关联语句设计
+	 */
 	static private $_selectSpaceLink = array();
-	static private $_linkLock = false;
+	static private $_linkLock = false;//关联查询锁
+	
+	/**
+		以下参数专为缓存系统设计，请勿修改
+	 */
+	static private $_processCache = array();//进程内缓存
+	static private $_queryTimeNeedle = 0;
+	//end
 	
 	private function __construct(){
-		global $gilConfig;
-		self::$_connected = call_user_func('Gil'.$gilConfig['db'].'::_conn');
+		self::$_connected = call_user_func('Gil'.self::$_gilConfig['db'].'::_conn');
 	}
 	
 	/**
@@ -62,19 +79,21 @@ class GilDB{
 	 * @return mixed
 	 */
 	static public function find(){
-		$sql = is_array(self::$_selectSpace) ? self::_selectSpaceParser() : self::$_selectSpace;
-		$result = self::_connect() -> getArray($sql);
-		self::_link($result);
+		$result = self::findAll();
 		return array_pop($result);
 	}
 	
 	/**
 	 * 查询多行
+	 * 如果存在缓存，将优先返回，而不连接数据库
 	 */
 	static public function findAll(){
+		if((self::$_gilConfig['db_processCache'] || self::$_gilConfig['db_resultCache'])
+			 && ( $cache = self::_getQueryCache() ) != false) return $cache;//查询缓存
 		$sql = is_array(self::$_selectSpace) ? self::_selectSpaceParser() : self::$_selectSpace;
 		$result = self::_connect() -> getArray($sql);
 		self::_link($result);
+		if((self::$_gilConfig['db_processCache'] || self::$_gilConfig['db_resultCache'])) self::_setQueryCache($result);
 		return $result;
 	}
 	
@@ -95,6 +114,11 @@ class GilDB{
 		return self::$_connected;
 	}
 	
+	/**
+	 * link查询是不进行任何缓存的，但link返回的结果保存到主查询后，是会进行缓存的
+	 * Enter description here ...
+	 * @param unknown_type $result
+	 */
 	static protected function _link(& $result){
 		if(self::$_linkLock) return false;
 		self::$_linkLock = true;
@@ -154,4 +178,17 @@ class GilDB{
 		return implode(' and ', $conditionString);
 	}
 	
+	static protected function _getQueryCache(){
+		$hash = 'DBCACHE_'.md5(serialize(self::$_selectSpace).serialize(self::$_selectSpaceLink));
+		if(self::$_gilConfig['db_processCache'] && isset(self::$_processCache[$hash])) return self::$_processCache[$hash];//优先返回进程内缓存
+		if(self::$_gilConfig['db_resultCache']) return GilCache::get($hash);//若进程内缓存不存在，则返回非持久化缓存
+		self::$_queryTimeNeedle = microtime();//定义一个时间起点，以检测缓存
+		return false;//均不存在，返回bool false
+	}
+	
+	static protected function _setQueryCache($result){
+		$hash = 'DBCACHE_'.md5(serialize(self::$_selectSpace).serialize(self::$_selectSpaceLink));
+		if(self::$_gilConfig['db_processCache']) self::$_processCache[$hash] = $result;
+		if(self::$_gilConfig['db_resultCache'] && ((microtime() - self::$_queryTimeNeedle)) > self::$_gilConfig['db_resultCache_config']['slowRequest']) GilCache::set($hash, $result, self::$_gilConfig['db_resultCache_config']['expired']);
+	}
 }
