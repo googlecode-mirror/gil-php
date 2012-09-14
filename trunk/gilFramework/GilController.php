@@ -1,5 +1,5 @@
 <?php
-final class GilController {
+class GilController {
 	static public function __init() {
 		defined('APPPATH') or define('APPPATH',dirname(dirname(__FILE__)));
 		defined('APPCONTROLLERPATH') or define('APPCONTROLLERPATH',dirname(dirname(__FILE__)).'/protected/controller');
