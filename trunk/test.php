@@ -2,14 +2,16 @@
 define('GILPATH',dirname(__FILE__).'/gilFramework');
 
 $gilConfig = array('oo'=>false);
-include(GILPATH.'/gilCore.php');
+include(GILPATH.'/GilCore.php');
 
 //$result = gilDB::findAll('select * from test');
 
 
 //print_r($result);
 
-//GilCache::set('1', 'nihso', '123');exit;
+//GilCache::set('1', 'nihso', '123');
+//echo GilCache::get('1');
+//exit;
 
 GilDB::select('test');
 GilDB::link('b', 'b', array('name'=>'name'));

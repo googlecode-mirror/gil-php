@@ -1,6 +1,5 @@
 <?php 
-return 
-$gilConfigs = array(
+return array(
 
 	'oo' => true,//面向对象编程，如果此值为false，默认不加载GilController类
 
@@ -34,7 +33,7 @@ $gilConfigs = array(
 	 * 及非持久化存储器的选择
 	 */
 	'db_resultCache_config' => array(
-		'slowRequest' => 0.1,//将SQL执行时长大于何值时，定义为慢查询，慢查询结果将被自动缓存，单位为毫秒
+		'slowRequest' => 0.000001,//将SQL执行时长大于何值时，定义为慢查询，慢查询结果将被自动缓存，单位为毫秒（0表示无条件缓存所有结果）
 		'cacheEngine' => 'File',//使用何种缓存引擎 File ,Memcache Saekvdb ......
 		'expired' => 3600,//结果缓存失效时间，单位为秒
 	),
@@ -42,7 +41,7 @@ $gilConfigs = array(
 	'cache' => true,//默认缓存开关
 	
 	'cache_config' => array(
-		'cacheEngine' => 'File',//默认缓存引擎
+		'cacheEngine' => 'Memcache',//默认缓存引擎
 		'expired' => 86400,//默认缓存失效时间
 	),
 	
@@ -52,6 +51,13 @@ $gilConfigs = array(
 	'cacheFile_config' => array(
 		'dir' => GILPATH.'/tmp',//缓存文件存放的位置
 		'rubblishCollectProbability' => 5,//启垃圾缓存清理器的机率，0-100表示，如10表示，100次访问中平均有10次会启动该清理器
+	),
+	
+	/**
+	 * Memcache引擎缓存的配置
+	 */
+	'cacheMemcache_config' => array(
+		array('host' => '127.0.0.1','port' => '11211'),//可支持多个memcache服务器
 	),
 	
 );

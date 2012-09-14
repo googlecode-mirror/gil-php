@@ -32,9 +32,10 @@ class GilCacheFile{
 	}
 	
 	static public function get($key){
+		if(!is_file(self::$_dir . '/cache_'.md5($key).'.php')) return false;
 		$value = file_get_contents(self::$_dir . '/cache_'.md5($key).'.php');
 		if( substr($value, 13, 10) < time() ){
-			$this -> del($key);
+			self::del($key);
 			return FALSE;
 		}
 		return unserialize(substr($value, 23)); 
