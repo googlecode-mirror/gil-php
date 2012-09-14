@@ -46,7 +46,7 @@ class GilDB{
 	 * @param string $fields
 	 */
 	static public function select($table, $conditions = array(), $sort = '', $limit = '', $fields = '*'){
-		self::$_selectSpace = array();
+		self::$_selectSpace = array();self::$_selectSpaceLink = array();
 		self::$_selectSpace[] = array('type'=>'select','table'=>$table,'conditions'=>$conditions,'sort'=>$sort,'fields'=>$fields, 'limit'=>$limit);
 	}
 	
