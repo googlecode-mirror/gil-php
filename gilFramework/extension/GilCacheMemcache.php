@@ -23,12 +23,12 @@ class GilCacheMemcache{
 	
 	static public function set($key,$value,$lifeTime){
 		$lifeTime = ($lifeTime == '-1') ? 2592000 : $lifeTime;
-		return self::$_memcache -> set(md5($key),serialize(array($value)),$lifeTime);
+		return self::$_memcache -> set(md5($key),$value,$lifeTime);
 	}
 	
 	static public function get($key){
 		$value = self::$_memcache -> get(md5($key));
-		return empty($value) ? false : array_pop(unserialize($value)); 
+		return empty($value) ? false : $value; 
 	}
 	
 	static public function del($key){
