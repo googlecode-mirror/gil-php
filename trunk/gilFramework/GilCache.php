@@ -2,7 +2,7 @@
 class GilCache{
 	static public $_cache = null;
 	
-	static function set($key,$value,$lifeTime = '-1'){self::cache() -> set($key,$value,$lifeTime);}
+	static function set($key,$value,$lifeTime = '-1'){self::cache()->set($key,$value,$lifeTime);}
 	static function del($key){self::cache()->del($key);}
 	static function get($key){return self::cache()->get($key);}
 	
@@ -23,8 +23,15 @@ class GilCache{
 		global $gilConfig;
 		if(self::$_cache === null){
 			self::$_cache = call_user_func('GilCache'.$gilConfig['cache_config']['cacheEngine'].'::_init',$gilConfig);
+			if(!self::$_cache) self::$_cache = new GilCacheUnavailable();//服务不可用
 		}
 		return self::$_cache;
 	}
 	
+}
+
+class GilCacheUnavailable{
+	static function set(){return false;}
+	static function del(){return false;}
+	static function get(){return false;}
 }
