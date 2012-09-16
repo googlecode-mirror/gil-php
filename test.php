@@ -7,6 +7,12 @@ define('GILPATH',dirname(__FILE__).'/gilFramework');//定义GIL框架主程序�
 $gilConfig = array('oo'=>false);//在加载配置文件前写上这句，可以覆盖配置，这里的意思是强制不使用oo模式
 include(GILPATH.'/GilCore.php');
 
+//GilSession::clean();
+//GilSession::set('hello','hi');
+//GilSession::del('hello');
+//echo GilSession::get('hello');
+exit;
+
 /**
  * 我们在数据库中有2个表
  * test表 列 id name

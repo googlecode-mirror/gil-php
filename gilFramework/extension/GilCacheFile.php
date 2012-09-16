@@ -25,13 +25,13 @@ class GilCacheFile{
 		return self::$_cursor;
 	}
 	
-	static public function set($key,$value,$lifeTime){
+	public function set($key,$value,$lifeTime){
 		$lifeTime = ($lifeTime == '-1') ? 86400000 : $lifeTime;
 		$value = '<?php exit;?>'.( time() + $lifeTime ).serialize($value);
 		file_put_contents(self::$_dir . '/cache_'.md5($key).'.php', $value);
 	}
 	
-	static public function get($key){
+	public function get($key){
 		if(!is_file(self::$_dir . '/cache_'.md5($key).'.php')) return false;
 		$value = file_get_contents(self::$_dir . '/cache_'.md5($key).'.php');
 		if( substr($value, 13, 10) < time() ){
@@ -41,7 +41,7 @@ class GilCacheFile{
 		return unserialize(substr($value, 23)); 
 	}
 	
-	static public function del($key){
+	public function del($key){
 		@unlink(self::$_dir . '/cache_'.md5($key).'.php');
 	}
 }

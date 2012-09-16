@@ -26,8 +26,8 @@ spl_autoload_register(function($mClassName){
  * @param bool $unsigned 是否
  * @param string $method
  */
-function GPCInt($key, $unsigned = false, $method = 'get|post'){
-	$data = intval(GPC($key, $method));
+function getGPCInt($key, $unsigned = false, $method = 'get|post'){
+	$data = intval(getGPC($key, $method));
 	return $unsigned ? abs($data) : $data;
 }
 
@@ -37,7 +37,7 @@ function GPCInt($key, $unsigned = false, $method = 'get|post'){
  * @param string $key
  * @param string $method
  */
-function GPC($key, $method = 'get|post'){
+function getGPC($key, $method = 'get|post'){
 	foreach (explode('|',$method) as $m){
 		switch(strtolower($m)){
 			case 'get':if(isset($_GET[$key])) return $_GET[$key];
@@ -46,4 +46,23 @@ function GPC($key, $method = 'get|post'){
 		}
 	}
 	return false;
+}
+
+/**
+ * 设置get post cookie中的对应值，默认为设置cookie
+ * $method可以|分隔，将从左至右顺序返回存在数据
+ * @param string $key
+ * @param string $value
+ * @param int $lifttime
+ * @return bool true , always return true
+ */
+function setGPC($key, $value, $lifetime = 8640000, $method = 'cookie'){
+	foreach (explode('|',$method) as $m){
+		switch(strtolower($m)){
+			case 'get':$_GET[$key] = $value;break;
+			case 'post':$_POST[$key] = $value;break;
+			case 'cookie':setcookie($key, $value, (time()+$lifetime));break;
+		}
+	}
+	return true;
 }

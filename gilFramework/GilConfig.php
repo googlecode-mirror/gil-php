@@ -37,10 +37,14 @@ return array(
 		'expired' => 3600,//结果缓存失效时间，单位为秒
 	),
 	
+	'session_config' => array(
+			'sessionEngine' => 'Cache',
+	),
+		
 	'cache' => true,//默认缓存开关
 	
 	'cache_config' => array(
-		'cacheEngine' => 'Memcache',//默认缓存引擎，File ,Memcache Saekvdb ......
+		'cacheEngine' => 'File',//默认缓存引擎，File ,Memcache Saekvdb ......
 		'expired' => 86400,//默认缓存失效时间
 	),
 	
