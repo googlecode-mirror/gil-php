@@ -1,31 +1,51 @@
 <?php
-//GilSession is Session Base
+/**
+ * GilSession 会话数据基类
+ * @author Cui
+ *
+ */
 class GilSession{
-	static public $_session = null;
+	static private $_session = null;
 
-	static public function _init(){
+	/**
+	 * 取得SESSION中某值
+	 * @param string $key
+	 */
+	static public function get($key){
+		return self::_init() -> get($key);
+	}
+
+	/**
+	 * 设置SESSION中某值
+	 * @param string $key
+	 * @param string $value
+	 */
+	static public function set($key, $value){
+		self::_init() -> set($key, $value);
+	}
+
+	/**
+	 * 删除SESSION中某值
+	 * @param unknown_type $key
+	 */
+	static public function del($key){
+		self::_init() -> del($key);
+	}
+
+	/**
+	 * 清空本次SESSION会话，删除所有会话数据
+	 */
+	static public function clean(){
+		self::_init() -> clean();
+	}
+	
+	static private function _init(){
 		if(self::$_session == null){
 			global $gilConfig;
 			self::$_session = call_user_func('GilSession'.$gilConfig['session_config']['sessionEngine'].'::_init',$gilConfig);
 			if(!self::$_session) self::$_session = new GilSessionUnavailable();
 		}
 		return self::$_session;
-	}
-
-	static public function get($key){
-		return self::_init() -> get($key);
-	}
-
-	static public function set($key, $value){
-		self::_init() -> set($key, $value);
-	}
-
-	static public function del($key){
-		self::_init() -> del($key);
-	}
-
-	static public function clean(){
-		self::_init() -> clean();
 	}
 }
 

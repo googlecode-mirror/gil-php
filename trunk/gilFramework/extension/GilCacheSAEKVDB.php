@@ -1,7 +1,12 @@
 <?php
+/**
+ * 请不要调用此类，此类是Cache扩展，请调用GilCache!
+ * @author Cui
+ *
+ */
 class GilCacheSAEKVDB{
-	static public $_cursor = null;
-	static public $_kvdb = null;
+	static private $_cursor = null;
+	static private $_kvdb = null;
 	
 	private function __construct($gilConfig){
 		self::$_kvdb = new SaeKV();
@@ -32,13 +37,13 @@ class GilCacheSAEKVDB{
 		return !self::$_kvdb ? null : self::$_cursor;
 	}
 	
-	static public function set($key,$value,$lifeTime){
+	public function set($key,$value,$lifeTime){
 		$lifeTime = ($lifeTime == '-1') ? 86400000 : $lifeTime;
 		$value = ( time() + $lifeTime ).serialize($value);
 		return self::$_kvdb -> set('cache_'.md5($key),$value);
 	}
 	
-	static public function get($key){
+	public function get($key){
 		$value = self::$_kvdb -> get('cache_'.md5($key));
 		if( substr($value, 0, 10) < time() ){
 			self::del($key);
@@ -47,7 +52,7 @@ class GilCacheSAEKVDB{
 		return unserialize(substr($value, 10));
 	}
 	
-	static public function del($key){
+	public function del($key){
 		return self::$_kvdb -> delete('cache_'.md5($key));
 	}
 }

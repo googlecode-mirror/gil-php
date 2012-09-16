@@ -38,7 +38,7 @@ return array(
 	),
 	
 	'session_config' => array(
-			'sessionEngine' => 'Cache',
+		'sessionEngine' => 'Cache',//Session使用的系统，可选 System（PHP内置的） Cache（根据你选择的Cache引擎的）
 	),
 		
 	'cache' => true,//默认缓存开关
