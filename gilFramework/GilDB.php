@@ -52,11 +52,20 @@ class GilDB{
 		self::$_selectSpace['select'] = array('type'=>'select','table'=>$table,'conditions'=>$conditions,'sort'=>$sort,'fields'=>$fields, 'limit'=>$limit);
 	}
 	
+	/**
+	 * 设置分页，设置完成后，将覆盖select()中的limit参数设置
+	 * @param int $page 要取的页
+	 * @param int $rowsPerPage 每页的记录数
+	 */
 	static public function setPager($page = 1, $rowsPerPage = 30){
 		$limit = ($page-1)*$rowsPerPage.','.$rowsPerPage;
 		self::$_selectSpace['select']['limit'] = $limit;
 	}
 	
+	/**
+	 * 获取分页信息，若未设置分页信息，并且select()中未传入$limit参数，将返回false值
+	 * @return boolean|multitype:number
+	 */
 	static public function getPager(){
 		$limitData = explode(',', self::$_selectSpace['select']['limit']);
 		if(empty($limitData[1])){
@@ -118,6 +127,7 @@ class GilDB{
 	/**
 	 * 查询多行
 	 * 如果存在缓存，将优先返回，而不连接数据库
+	 * @return Ambigous <boolean, multitype:>|unknown
 	 */
 	static public function findAll(){
 		if((self::$_gilConfig['db_processCache'] || self::$_gilConfig['db_resultCache'])
