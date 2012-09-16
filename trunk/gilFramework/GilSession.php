@@ -42,7 +42,7 @@ class GilSession{
 	static private function _init(){
 		if(self::$_session == null){
 			global $gilConfig;
-			self::$_session = call_user_func('GilSession'.$gilConfig['session_config']['sessionEngine'].'::_init',$gilConfig);
+			self::$_session = call_user_func('GilSession'.$gilConfig['session_config']['sessionEngine'].'::init',$gilConfig);
 			if(!self::$_session) self::$_session = new GilSessionUnavailable();
 		}
 		return self::$_session;
@@ -66,16 +66,15 @@ class GilSessionUnavailable{
  *
  */
 class GilSessionSystem{
-	static public $_cursor = null;
+	static private $_cursor = null;
 
 	private function __construct(){
 		session_start();
 	}
 
-	static public function _init(){
+	static public function init(){
 		if(self::$_cursor === null){ 
-            $c = __CLASS__ ;  
-            self::$_cursor = new $c();
+            self::$_cursor = new GilSessionSystem;
 		}
 		return self::$_cursor;
 	}
@@ -103,9 +102,9 @@ class GilSessionSystem{
  *
  */
 class GilSessionCache{
-	static public $_cursor = null;
-	static public $_sessionid = null;
-	static public $_sessionData = array();
+	static private $_cursor = null;
+	static private $_sessionid = null;
+	static private $_sessionData = array();
 
 	private function __construct(){
 		self::$_sessionid = getGPC('sessionid','cookie');
@@ -118,10 +117,9 @@ class GilSessionCache{
 		}
 	}
 
-	static public function _init(){
+	static public function init(){
 		if(self::$_cursor === null){ 
-            $c = __CLASS__ ;  
-            self::$_cursor = new $c();
+            self::$_cursor = new GilSessionCache;
 		}
 		return self::$_cursor;
 	}

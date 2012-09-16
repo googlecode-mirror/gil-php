@@ -9,4 +9,4 @@ else $gilConfig = require(GILPATH.'/GilConfig.php');
 
 GilDB::$_gilConfig = $gilConfig;
 
-if($gilConfig['oo']) GilController::__init();
+if($gilConfig['oo']) GilController::init();
