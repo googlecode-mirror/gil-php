@@ -8,9 +8,9 @@ $gilConfig = array('oo'=>false);//在加载配置文件前写上这句，可以�
 include(GILPATH.'/GilCore.php');
 
 //GilSession::clean();
-GilSession::set('hello','hi');
+//GilSession::set('hello','hi');
 //GilSession::del('hello');
-echo GilSession::get('hello');
+//echo GilSession::get('hello');
 //exit;
 
 /**
@@ -20,11 +20,11 @@ echo GilSession::get('hello');
  * 下面，我们来读取数据试试看
  */
 
-$result = gilDB::findSql('select * from test');//单独地运行SQL语句，读表
+//$result = gilDB::findSql('select * from test');//单独地运行SQL语句，读表
 //需要特别注意，这里需要自行过滤危险字符串
 
-print_r($result);
-
+//print_r($result);
+//exit;
 GilCache::set('1', 'nihso', '123');//这里示范了key=>value式的缓存写入，默认使用了File引擎缓存，请在gilFramework下建立一个tmp文件夹用于存放临时文件
 echo GilCache::get('1');
 

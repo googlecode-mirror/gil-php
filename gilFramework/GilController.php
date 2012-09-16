@@ -1,6 +1,6 @@
 <?php
 class GilController {
-	static public function __init() {
+	static public function init() {
 		defined('APPPATH') or define('APPPATH',dirname(dirname(__FILE__)));
 		defined('APPCONTROLLERPATH') or define('APPCONTROLLERPATH',dirname(dirname(__FILE__)).'/protected/controller');
 		defined('APPMODELPATH') or define('APPMODELPATH',dirname(dirname(__FILE__)).'/protected/model');
