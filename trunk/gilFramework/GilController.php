@@ -37,7 +37,7 @@ class GilController {
 	
 	}
 	
-	static private function _routeParser($routeUrl){
+	static protected function _routeParser($routeUrl){
 		global $gilConfig;
 		$routeUrl = empty($routeUrl) ? $gilConfig['oo_config']['defaultController'].'/'.$gilConfig['oo_config']['defaultAction'] : $routeUrl;
         $routeArray = explode('/',$routeUrl);

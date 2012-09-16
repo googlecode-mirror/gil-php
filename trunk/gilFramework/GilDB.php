@@ -49,7 +49,36 @@ class GilDB{
 	 */
 	static public function select($table, $conditions = array(), $sort = '', $limit = '', $fields = '*'){
 		self::$_selectSpace = array();self::$_selectSpaceLink = array();
-		self::$_selectSpace[] = array('type'=>'select','table'=>$table,'conditions'=>$conditions,'sort'=>$sort,'fields'=>$fields, 'limit'=>$limit);
+		self::$_selectSpace['select'] = array('type'=>'select','table'=>$table,'conditions'=>$conditions,'sort'=>$sort,'fields'=>$fields, 'limit'=>$limit);
+	}
+	
+	static public function setPager($page = 1, $rowsPerPage = 30){
+		$limit = ($page-1)*$rowsPerPage.','.$rowsPerPage;
+		self::$_selectSpace['select']['limit'] = $limit;
+	}
+	
+	static public function getPager(){
+		$limitData = explode(',', self::$_selectSpace['select']['limit']);
+		if(empty($limitData[1])){
+			return false;
+		}
+		$rowsPerPage = $limitData[1];
+		$page = (floor($limitData[0]/$rowsPerPage)+1);
+		
+		$whereSql = '';
+		if(!empty(self::$_selectSpace['select']['conditions'])) $whereSql = ' where '.self::_conditionParser(self::$_selectSpace['select']['table'], self::$_selectSpace['select']['conditions']);
+		$countResult = self::findSql('select count(*) as rows from '.self::$_selectSpace['select']['table'].$whereSql);
+
+		return array(
+				'total_count'=>(int)$countResult[0]['rows'],
+				'page_size' => (int)$rowsPerPage,
+				'total_page' => ceil($countResult[0]['rows']/$rowsPerPage),
+				'first_page' => 1,
+				'prev_page' => ($page-1),
+				'next_page' => ($page+1),
+				'last_page' => ceil($countResult[0]['rows']/$rowsPerPage),
+				'current_page' => $page
+				);		
 	}
 	
 	/**
@@ -137,6 +166,7 @@ class GilDB{
 	 * @param unknown_type $result
 	 */
 	static protected function _link(& $result){
+		if(empty($result)) return false;
 		if(self::$_linkLock) return false;
 		self::$_linkLock = true;
 		foreach(self::$_selectSpaceLink as $link){
@@ -164,11 +194,13 @@ class GilDB{
 		self::$_linkLock = false;
 	}
 	
-	static protected function _selectSpaceParser(){
-		$fromSql = '';$joinSql = '';$endSql = '';$fields = array();
+	static protected function _selectSpaceParser($typeFilter = false){
+		$fromSql = '';$joinSql = '';$whereSql = '';$endSql = '';$fields = array();
 		foreach (self::$_selectSpace as $selectSpaceItem){
+			if($typeFilter != false && $selectSpaceItem['type'] != $typeFilter) continue;//过滤语句
 			if($selectSpaceItem['type'] == 'select'){
 				$fromSql = ' FROM ' . $selectSpaceItem['table'] . ' ';
+				if(!empty($selectSpaceItem['conditions'])) $whereSql = ' where '.self::_conditionParser($selectSpaceItem['table'], $selectSpaceItem['conditions']);
 				if(!empty($selectSpaceItem['sort'])) $endSql.=' ORDER BY '.$selectSpaceItem['sort'];
 				if(!empty($selectSpaceItem['limit'])) $endSql.=' LIMIT '.$selectSpaceItem['limit'];
 			}
@@ -182,7 +214,7 @@ class GilDB{
 				$fields[] = $selectSpaceItem['table'] . '.' . $fat;
 			}
 		}
-		return 'SELECT '. implode(',',$fields) . $fromSql . $joinSql . $endSql;
+		return 'SELECT '. implode(',',$fields) . $fromSql . $joinSql . $whereSql . $endSql;
 	}
 	
 	static protected function _conditionParser($table, $condition, $join = false){
