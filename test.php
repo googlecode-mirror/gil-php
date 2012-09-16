@@ -8,10 +8,10 @@ $gilConfig = array('oo'=>false);//在加载配置文件前写上这句，可以�
 include(GILPATH.'/GilCore.php');
 
 //GilSession::clean();
-//GilSession::set('hello','hi');
+GilSession::set('hello','hi');
 //GilSession::del('hello');
-//echo GilSession::get('hello');
-exit;
+echo GilSession::get('hello');
+//exit;
 
 /**
  * 我们在数据库中有2个表

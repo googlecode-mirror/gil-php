@@ -1,7 +1,12 @@
 <?php
+/**
+ * 请不要调用此类，此类是Cache扩展，请调用GilCache!
+ * @author Cui
+ *
+ */
 class GilCacheMemcache{
-	static public $_cursor = null;
-	static public $_memcache = null;
+	static private $_cursor = null;
+	static private $_memcache = null;
 	
 	private function __construct($gilConfig){
 		self::$_memcache = new Memcache;
@@ -21,17 +26,17 @@ class GilCacheMemcache{
 		return !self::$_memcache ? null : self::$_cursor;
 	}
 	
-	static public function set($key,$value,$lifeTime){
+	public function set($key,$value,$lifeTime){
 		$lifeTime = ($lifeTime == '-1') ? 2592000 : $lifeTime;
 		return self::$_memcache -> set(md5($key),$value,$lifeTime);
 	}
 	
-	static public function get($key){
+	public function get($key){
 		$value = self::$_memcache -> get(md5($key));
 		return empty($value) ? false : $value; 
 	}
 	
-	static public function del($key){
+	public function del($key){
 		return self::$_memcache -> delete(md5($key));
 	}
 }

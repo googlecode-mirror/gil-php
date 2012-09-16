@@ -6,15 +6,17 @@
  *
  */
 class GilDB{
-	static public $_connected = null;
-	static public $_cursor = null;
 	static public $_gilConfig = array();//全局配置
-	static private $_selectSpace = array();
+	
+	static protected $_selectSpace = array();
+	
+	static private $_connected = null;
+	static private $_cursor = null;
 	
 	/**
 		以下参数专为关联语句设计
 	 */
-	static private $_selectSpaceLink = array();
+	static protected $_selectSpaceLink = array();
 	static private $_linkLock = false;//关联查询锁
 	
 	/**
@@ -25,7 +27,7 @@ class GilDB{
 	//end
 	
 	private function __construct(){
-		self::$_connected = call_user_func('Gil'.self::$_gilConfig['db'].'::_conn');
+		self::$_connected = call_user_func('Gil'.self::$_gilConfig['db'].'::conn');
 	}
 	
 	/**
@@ -33,7 +35,7 @@ class GilDB{
 	 * 注意，mysql_pconnect方式建立的连接无法使用此方法关闭
 	 */
 	static public function close(){
-		self::_connect() -> _disconn();
+		self::_connect() -> disconn();
 		self::$_connected = null;
 	}
 	
@@ -81,7 +83,7 @@ class GilDB{
 	 */
 	static public function find(){
 		$result = self::findAll();
-		return array_pop($result);
+		return array_shift($result);
 	}
 	
 	/**

@@ -1,7 +1,12 @@
 <?php
+/**
+ * 请不要调用此类，此类是Cache扩展，请调用GilCache!
+ * @author Cui
+ *
+ */
 class GilCacheFile{
-	static public $_cursor = null;
-	static protected $_dir = '';
+	static private $_cursor = null;
+	static private $_dir = '';
 	
 	private function __construct($gilConfig){
 		self::$_dir = $gilConfig['cacheFile_config']['dir'];
