@@ -31,7 +31,7 @@ class GilCache{
 }
 
 class GilCacheUnavailable{
-	static function set(){return false;}
-	static function del(){return false;}
-	static function get(){return false;}
+	function __call($name,$arguments){
+		return false;
+	}
 }

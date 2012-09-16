@@ -9,8 +9,8 @@ class GilMysql{
 	
 	private function __construct(){
 		global $gilConfig;
-		if($gilConfig['db_config']['pconnect']) self::$_db = mysql_pconnect($gilConfig['db_config']['host'],$gilConfig['db_config']['user'],$gilConfig['db_config']['password']);
-		else self::$_db = mysql_connect($gilConfig['db_config']['host'],$gilConfig['db_config']['user'],$gilConfig['db_config']['password']);
+		if($gilConfig['db_config']['pconnect']) self::$_db = mysql_pconnect($gilConfig['db_config']['host'],$gilConfig['db_config']['user'],$gilConfig['db_config']['password']) or die('DB Connect Fail!');
+		else self::$_db = mysql_connect($gilConfig['db_config']['host'],$gilConfig['db_config']['user'],$gilConfig['db_config']['password']) or die('DB Connect Fail!');
 		mysql_select_db($gilConfig['db_config']['dbname'],self::$_db);
 		mysql_query("set names ".$gilConfig['db_config']['charset'],self::$_db);
 	}
