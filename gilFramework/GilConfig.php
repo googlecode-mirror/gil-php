@@ -26,7 +26,7 @@ return array(
 
 	'db_processCache' => true,//进程内缓存，启用时，两条相同的SQL命令将不会重复执行
 	
-	'db_resultCache' => true,//结果缓存，启用时，结果将缓存至非持久化存储器中，在一定时间内，相同的SQL命令将不会重复执行
+	'db_resultCache' => false,//结果缓存，启用时，结果将缓存至非持久化存储器中，在一定时间内，相同的SQL命令将不会重复执行
 	
 	/**
 	 * 结果缓存的限制条件
