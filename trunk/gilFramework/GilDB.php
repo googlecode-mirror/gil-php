@@ -231,7 +231,7 @@ class GilDB{
 		if(is_string($condition)) return $condition;
 		$conditionString = array();
 		foreach ($condition as $key => $value){
-			if($join) $conditionString[] = $key .'='. $value;
+			if($join || strpos($key, '.') !== false) $conditionString[] = $key .'='. $value;
 			else $conditionString[] = $table .'.'. $key .'='. '\''. self::_connect()->escape($value) .'\'';
 		}
 		return implode(' and ', $conditionString);
