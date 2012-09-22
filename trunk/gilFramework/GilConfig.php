@@ -22,7 +22,7 @@ return array(
 		'pconnect'=>false,//是否为长链接，不建议设置为true
 	),
 	
-	'db_readonly' => true,//严格的只读模式，当为true时，禁止一切写入操作语句
+	'db_readonly' => false,//严格的只读模式，当为true时，禁止一切写入操作语句
 
 	'db_processCache' => true,//进程内缓存，启用时，两条相同的SQL命令将不会重复执行
 	

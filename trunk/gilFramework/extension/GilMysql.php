@@ -47,6 +47,10 @@ class GilMysql{
 		return $rows;
 	}
 	
+	public function runSql($sql){
+		return self::_exec($sql);
+	}
+	
 	/**
 	 * 转义危险字符，可供外部调用
 	 * @param string $word
