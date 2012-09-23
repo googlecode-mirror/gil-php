@@ -52,7 +52,7 @@ function getGPC($key, $method = 'get|post'){
 
 /**
  * 设置get post cookie中的对应值，默认为设置cookie
- * $method可以|分隔，将从左至右顺序返回存在数据
+ * $method可以|分隔，将从左至右顺序设置数据
  * @param string $key
  * @param string $value
  * @param int $lifttime
