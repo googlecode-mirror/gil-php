@@ -49,7 +49,7 @@ class GilDB{
 	 */
 	static public function select($table, $conditions = array(), $sort = '', $limit = '', $fields = '*'){
 		self::$_selectSpace = array();self::$_selectSpaceLink = array();
-		self::$_selectSpace['select'] = array('type'=>'select','table'=>$table,'conditions'=>$conditions,'sort'=>$sort,'fields'=>$fields, 'limit'=>$limit);
+		self::$_selectSpace['select'] = array('type'=>'select', 'table'=>$table, 'conditions'=>$conditions, 'sort'=>$sort, 'fields'=>$fields, 'limit'=>$limit);
 	}
 	
 	/**
@@ -231,7 +231,7 @@ class GilDB{
 		if(is_string($condition)) return $condition;
 		$conditionString = array();
 		foreach ($condition as $key => $value){
-			if($join || strpos($key, '.') !== false) $conditionString[] = $key .'='. $value;
+			if($join || strpos($key, '.') !== false) $conditionString[] = $key .'='. self::_connect()->escape($value);
 			else $conditionString[] = $table .'.'. $key .'='. '\''. self::_connect()->escape($value) .'\'';
 		}
 		return implode(' and ', $conditionString);
@@ -264,7 +264,7 @@ class GilDB{
 					if($v < time()) unset($index[$k]);//垃圾收集机制
 				}
 			}
-			GilCache::set('DBCACHE_'.$table,$index,self::$_gilConfig['db_resultCache_config']['expired']);
+			GilCache::set('DBCACHE_'.$table, $index, self::$_gilConfig['db_resultCache_config']['expired']);
 		}
 	}
 }

@@ -28,15 +28,18 @@ class GilDBW extends GilDB{
 		$sqls = array();
 		foreach(self::$_writeSpace as $one){
 			if($one['type'] == 'Insert'){
+				$keys = array();
+				foreach($one['rows'] as $key => $value) $keys[] = $key;
 				$sql = 'insert into '.$one['table'].' '.
-						'('.implode(',',array_flip($one['rows'])).')'.
+						'('.implode(',',$keys).')'.
 						' VALUES('.
 						'\''.implode('\',\'',$one['rows']).'\''.')';
 			}
 			elseif($one['type'] == 'Update'){
-				echo $one['type'];
+				$rows = array();
+				foreach($one['rows'] as $key => $value) $rows[] = $key.'='.'\''.$value.'\''; 
 				$sql = 'update '.$one['table'].' set '.
-						parent::_conditionParser($one['table'], $one['rows']).' where '.
+						implode(',',$rows).' where '.
 						parent::_conditionParser($one['table'], $one['condition']);
 			}
 			elseif($one['type'] == 'Delete'){
@@ -47,19 +50,29 @@ class GilDBW extends GilDB{
 			}
 			$sqls[] = $sql;
 		}
-
-		if($transaction) self::_connect() -> runSql('START TRANSACTION');
-		foreach($sqls as $sqlObj){
-			$succeed = self::_connect() -> runSql($sqlObj);
-			if(!$succeed && $transaction){
-				self::_connect() -> runSql('ROLLBACK'); 
-				return false;
-			}
-		}
 		if($transaction){
+			self::_connect() -> runSql('START TRANSACTION');
+			foreach($sqls as $sqlObj){
+				$succeed = self::_connect() -> runSql($sqlObj);
+				if(!$succeed){
+					self::_connect() -> runSql('ROLLBACK');
+					self::_connect() -> runSql('END');
+					return false;
+				}
+			}
 			self::_connect() -> runSql('COMMIT');
 			self::_connect() -> runSql('END');
 		}
+		else{
+			foreach($sqls as $sqlObj) $succeed = self::_connect() -> runSql($sqlObj);
+		}
+		//表级的缓存清扫
+		if(self::$_gilConfig['db_resultCache']){
+			foreach (self::$_writeSpace as $one)
+				self::cleanCacheByTable($one['table']);
+		}
+		//end
+		if($succeed) self::$_writeSpace = array();//清空所有请求
 		return $succeed;
 	}
 }
