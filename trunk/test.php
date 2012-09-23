@@ -7,9 +7,9 @@ define('GILPATH',dirname(__FILE__).'/gilFramework');//定义GIL框架主程序�
 $gilConfig = array('oo'=>false);//在加载配置文件前写上这句，可以覆盖配置，这里的意思是强制不使用oo模式
 include(GILPATH.'/GilCore.php');
 
-GilDBW::update('test',array('id'=>'4'),array('name'=>'okdddddddd'));
-GilDBW::insert('test',array('id'=>'41','name'=>'hi'));
-GilDBW::delete('test',array('id'=>'5'));
+//GilDBW::update('test',array('id'=>'4'),array('name'=>'ok'));
+GilDBW::insert('test',array('name'=>'hi','ext'=>'1'));
+//GilDBW::delete('test',array('id'=>'5'));
 GilDBW::save(true);
 
 //GilSession::clean();

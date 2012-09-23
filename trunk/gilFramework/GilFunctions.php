@@ -5,18 +5,20 @@
  * 如有与GilFunctions冲突的__autoload，则必须在载入GilCore.php前、或在GilConfig.php中使用spl_autoload_register()方法定义好
  */
 spl_autoload_register(function($mClassName){
-	if(file_exists(GILPATH."/".$mClassName.".php")){
-		require(GILPATH."/".$mClassName.".php");//Load Core Dir first
+	
+	if(defined('APPMODELPATH') && file_exists(APPMODELPATH."/".$mClassName.".php")){
+		require(APPMODELPATH."/".$mClassName.".php");//Load User Defined Model Dir First
 	}
 	elseif(file_exists(GILPATH."/extension/".$mClassName.".php")){
 		require(GILPATH."/extension/".$mClassName.".php");//Load Extension Dir second
 	}
-	elseif(defined('APPMODELPATH') && file_exists(APPMODELPATH."/".$mClassName.".php")){
-		require(APPMODELPATH."/".$mClassName.".php");//Load User Defined Model Dir final
+	elseif(file_exists(GILPATH."/".$mClassName.".php")){
+		require(GILPATH."/".$mClassName.".php");//Load Core Dir Last
 	}
 	else{
 		die("Error:Cannot found model {$mClassName}");
 	}
+	
 });
 
 /**
