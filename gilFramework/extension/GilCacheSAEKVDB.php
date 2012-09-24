@@ -29,7 +29,7 @@ class GilCacheSAEKVDB{
 		}
 	}
 	
-	static public function _init($gilConfig){
+	static public function init($gilConfig){
 		if(self::$_cursor === null){
 			$c = __CLASS__ ;  
             self::$_cursor = new $c($gilConfig);  

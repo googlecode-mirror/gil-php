@@ -12,7 +12,7 @@ class GilCacheSAEMemcache{
 		self::$_memcache = memcache_init();
 	}
 	
-	static public function _init(){
+	static public function init(){
 		if(self::$_cursor === null){
 			$c = __CLASS__ ;  
             self::$_cursor = new $c();  

@@ -12,7 +12,7 @@ class GilCache{
 	 */
 	static public function engineSwitch($engine){
 		global $gilConfig;
-		return self::$_cache = call_user_func('GilCache'.$engine.'::_init',$gilConfig);
+		return self::$_cache = call_user_func('GilCache'.$engine.'::init',$gilConfig);
 	}
 	
 	/**
@@ -22,7 +22,7 @@ class GilCache{
 	static protected function _cache(){
 		global $gilConfig;
 		if(self::$_cache === null){
-			self::$_cache = call_user_func('GilCache'.$gilConfig['cache_config']['cacheEngine'].'::_init',$gilConfig);
+			self::$_cache = call_user_func('GilCache'.$gilConfig['cache_config']['cacheEngine'].'::init',$gilConfig);
 			if(!self::$_cache) self::$_cache = new GilCacheUnavailable();//服务不可用
 		}
 		return self::$_cache;
