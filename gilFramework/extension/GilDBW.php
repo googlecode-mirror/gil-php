@@ -25,6 +25,7 @@ class GilDBW extends GilDB{
 	 * @param string $transaction
 	 */
 	static public function save($transaction = false){
+                if(empty(self::$_writeSpace)) return true;//没有动作语句，返回成功
 		$sqls = array();
 		foreach(self::$_writeSpace as $one){
 			if($one['type'] == 'Insert'){
@@ -43,7 +44,7 @@ class GilDBW extends GilDB{
 						parent::_conditionParser($one['table'], $one['condition']);
 			}
 			elseif($one['type'] == 'Delete'){
-				$sql = 'delete from '.$one['table'].' where '.parent::_conditionParser($one['table'], $one['condition']);
+				$sql = 'delete from '.$one['table'].' where '.parent::_conditionParser($one['table'], $one['condition'].';');
 			}
 			else{
 				$sql = '';continue;
