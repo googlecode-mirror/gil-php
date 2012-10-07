@@ -221,6 +221,7 @@ class GilDB{
 				continue;
 			}
 			foreach (explode(',', $selectSpaceItem['fields']) as $fat){
+                                if(strpos($fat, '(') || strpos($fat, ')') || strpos($fat, '.')) $fields[] = $fat;continue;
 				$fields[] = $selectSpaceItem['table'] . '.' . $fat;
 			}
 		}
